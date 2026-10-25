@@ -275,7 +275,8 @@ function showReport(){
     (done ? '✅ résolu' + (queries ? ' en ' + queries + ' requête' + (queries>1?'s':'') : '') : '⬜ non résolu') + '\n' +
     grid + '\n' +
     'série : ' + s + ' jour' + (s>1?'s':'') + ' · ' + total + '/' + TOTAL + ' dossiers classés\n' +
-    'Titre : ' + P[idx].titre;
+    'Titre : ' + P[idx].titre + '\n' +
+    'à toi de jouer : https://kevinjoseph-dataportfolio.github.io/sql-detective';
 
   $('reportCard').textContent = txt;
   $('report').className = 'report on';
