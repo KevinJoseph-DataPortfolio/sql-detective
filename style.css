@@ -43,6 +43,8 @@ button.avatar{padding:0;cursor:pointer}
 .level-options small{display:block;color:var(--fg-dim);font-size:12px;line-height:1.5;margin-top:3px}
 .identity{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .player{display:flex;align-items:center;gap:8px;min-width:0}
+.player{flex-wrap:wrap}
+.photo-button{font-size:9px;padding:8px;letter-spacing:.02em}
 #playerName{max-width:160px;overflow-wrap:anywhere;font-size:12px}
 .topbar{flex-wrap:wrap}
 .topbar .meta{align-items:center;flex-wrap:wrap}

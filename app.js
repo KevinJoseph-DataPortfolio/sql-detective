@@ -119,6 +119,7 @@ function initProfile(){
     this.value = '';
   };
   $('playerAvatar').onclick = function(){ $('profileAvatarFile').click(); };
+  $('importProfilePhoto').onclick = function(){ $('profileAvatarFile').click(); };
   $('profileAvatarFile').onchange = function(){
     importAvatar(this.files[0], 'profileAvatarStatus', function(avatar){
       var updated = {name:profile.name, avatar:avatar, level:profile.level};
