@@ -13,16 +13,57 @@ var STYLES = ['notionists','avataaars','bottts','pixel-art','adventurer'];
 var LEVELS = ['Débutant','Intermédiaire','Avancé'];
 var profile = {name:'Détective', avatar:{style:'notionists', seed:'Détective'}, level:0};
 var avatarSalt = '';
+var customAvatar = null;
+var avatarBusy = false;
+
+function isPhoto(avatar){
+  return avatar && typeof avatar.photo === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(avatar.photo) && avatar.photo.length < 300000;
+}
+function importAvatar(file, statusId, apply){
+  if(!file || avatarBusy) return;
+  var status = $(statusId);
+  if(!/^image\//.test(file.type) || file.size > 15*1024*1024){
+    status.textContent = 'Choisis une image de moins de 15 Mo.';
+    return;
+  }
+  avatarBusy = true;
+  $('profileForm').querySelector('button[type="submit"]').disabled = true;
+  status.textContent = 'Préparation de l’image…';
+  var url = URL.createObjectURL(file);
+  var img = new Image();
+  function finish(){
+    URL.revokeObjectURL(url);
+    avatarBusy = false;
+    $('profileForm').querySelector('button[type="submit"]').disabled = false;
+  }
+  img.onload = function(){
+    try{
+      var canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 256;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#14171c';
+      ctx.fillRect(0,0,256,256);
+      var side = Math.min(img.naturalWidth,img.naturalHeight);
+      ctx.drawImage(img,(img.naturalWidth-side)/2,(img.naturalHeight-side)/2,side,side,0,0,256,256);
+      apply({photo:canvas.toDataURL('image/jpeg',0.85)});
+      status.textContent = 'Image enregistrée dans ce navigateur uniquement.';
+    }catch(e){ status.textContent = 'Impossible d’enregistrer cette image. Essaie une autre image ou libère du stockage dans le navigateur.'; }
+    finish();
+  };
+  img.onerror = function(){ status.textContent = 'Image illisible. Essaie un fichier JPG, PNG ou WebP.'; finish(); };
+  img.src = url;
+}
 
 function avatarURL(avatar){
+  if(isPhoto(avatar)) return avatar.photo;
   return 'https://api.dicebear.com/9.x/' + avatar.style + '/svg?seed=' + encodeURIComponent(avatar.seed);
 }
 function paintAvatar(id, name, avatar){
   var holder = $(id);
   var initials = name.trim().split(/\s+/).map(function(word){ return Array.from(word)[0]; }).slice(0,2).join('').toLocaleUpperCase('fr');
   holder.textContent = initials || 'D';
-  holder.setAttribute('aria-label', 'Avatar de ' + name);
-  holder.setAttribute('role', 'img');
+  holder.setAttribute('aria-label', id === 'playerAvatar' ? 'Importer une photo de profil pour ' + name : 'Avatar de ' + name);
+  if(id !== 'playerAvatar') holder.setAttribute('role', 'img');
   var img = document.createElement('img');
   img.alt = '';
   img.referrerPolicy = 'no-referrer';
@@ -40,7 +81,7 @@ function renderProfile(){
 }
 function previewAvatar(){
   var name = $('detectiveName').value.trim() || 'Détective';
-  var avatar = {style:$('avatarStyle').value, seed:name + avatarSalt};
+  var avatar = customAvatar || {style:$('avatarStyle').value, seed:name + avatarSalt};
   paintAvatar('avatarPreview', name, avatar);
   return avatar;
 }
@@ -60,12 +101,33 @@ function finishWelcome(skip){
 function initProfile(){
   var stored = null;
   try{ stored = JSON.parse(localStorage.getItem('sqd_profile')); }catch(e){}
-  var valid = stored && typeof stored.name === 'string' && stored.name.trim() && [0,1,2].indexOf(stored.level) !== -1 && stored.avatar && STYLES.indexOf(stored.avatar.style) !== -1 && typeof stored.avatar.seed === 'string';
+  var valid = stored && typeof stored.name === 'string' && stored.name.trim() && [0,1,2].indexOf(stored.level) !== -1 && stored.avatar && (isPhoto(stored.avatar) || (STYLES.indexOf(stored.avatar.style) !== -1 && typeof stored.avatar.seed === 'string'));
   if(valid){ profile = {name:stored.name.trim().slice(0,20), avatar:stored.avatar, level:stored.level}; }
   renderProfile();
   $('detectiveName').addEventListener('input', function(){ avatarSalt = ''; previewAvatar(); });
-  $('avatarStyle').onchange = previewAvatar;
-  $('shuffleAvatar').onclick = function(){ avatarSalt = randomSalt(); previewAvatar(); };
+  $('avatarStyle').onchange = function(){ customAvatar = null; $('avatarStatus').textContent = ''; previewAvatar(); };
+  $('shuffleAvatar').onclick = function(){ customAvatar = null; avatarSalt = randomSalt(); $('avatarStatus').textContent = ''; previewAvatar(); };
+  $('importAvatarBtn').onclick = function(){ $('avatarFile').click(); };
+  $('avatarFile').onchange = function(){
+    importAvatar(this.files[0], 'avatarStatus', function(avatar){
+      // Vérifie la place disponible avant de valider la photo.
+      localStorage.setItem('sqd_avatar_check', JSON.stringify(avatar));
+      localStorage.removeItem('sqd_avatar_check');
+      customAvatar = avatar;
+      previewAvatar();
+    });
+    this.value = '';
+  };
+  $('playerAvatar').onclick = function(){ $('profileAvatarFile').click(); };
+  $('profileAvatarFile').onchange = function(){
+    importAvatar(this.files[0], 'profileAvatarStatus', function(avatar){
+      var updated = {name:profile.name, avatar:avatar, level:profile.level};
+      localStorage.setItem('sqd_profile', JSON.stringify(updated));
+      profile = updated;
+      renderProfile();
+    });
+    this.value = '';
+  };
   $('profileForm').onsubmit = function(e){ e.preventDefault(); finishWelcome(false); };
   $('skipWelcome').onclick = function(){ finishWelcome(true); };
   $('welcome').addEventListener('cancel', function(e){ e.preventDefault(); finishWelcome(true); });

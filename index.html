@@ -35,7 +35,10 @@
       <span class="avatar avatar-large" id="avatarPreview"></span>
       <div><label for="avatarStyle">Style de l’avatar</label>
       <select id="avatarStyle"><option value="notionists">Portrait illustré</option><option value="avataaars">Personnage</option><option value="bottts">Robot</option><option value="pixel-art">Pixels</option><option value="adventurer">Aventurier</option></select>
-      <button type="button" class="btn ghost" id="shuffleAvatar">Mélanger</button></div>
+      <button type="button" class="btn ghost" id="shuffleAvatar">Mélanger</button>
+      <button type="button" class="btn ghost" id="importAvatarBtn">Importer une image</button>
+      <input type="file" id="avatarFile" accept="image/*" hidden>
+      <p id="avatarStatus" role="status" aria-live="polite"></p></div>
     </div>
     <fieldset class="level-options"><legend>Ton niveau</legend>
       <label><input type="radio" name="startLevel" value="0" checked><span><b>Débutant</b><small>SELECT, WHERE — dossiers 1 à 10.</small></span></label>
@@ -60,7 +63,7 @@
 </dialog>
 
 <header class="topbar">
-  <div class="identity"><div class="player"><span class="avatar" id="playerAvatar"></span><span id="playerName">Détective</span></div>
+  <div class="identity"><div class="player"><button type="button" class="avatar" id="playerAvatar" aria-label="Importer une photo de profil" title="Importer une photo de profil"></button><span id="playerName">Détective</span></div>
   <a class="brand" href="index.html"><span class="mark">SQL</span><span class="brandname">Detective</span></a>
   </div>
   <div class="meta">
@@ -69,6 +72,8 @@
     <div class="meta-item"><span class="lbl">Série</span><span class="val" id="streakVal">0 j</span></div>
   </div>
 </header>
+<input type="file" id="profileAvatarFile" accept="image/*" hidden>
+<p id="profileAvatarStatus" class="avatar-status" role="status" aria-live="polite"></p>
 
 <main class="wrap">
 
