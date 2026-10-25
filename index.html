@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL Detective — apprendre SQL par des enquêtes de 60 secondes</title>
+<meta name="description" content="Un jeu gratuit pour apprendre SQL : une affaire par jour, 60 secondes, tu écris une vraie requête pour résoudre l'enquête. SELECT, WHERE, JOIN, GROUP BY.">
+<meta property="og:title" content="SQL Detective">
+<meta property="og:description" content="Une affaire par jour. 60 secondes. Écris une vraie requête SQL pour résoudre l'enquête.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<!-- Analytics sans cookies : pas de bandeau de consentement nécessaire -->
+<script defer data-domain="TON-DOMAINE" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+
+<dialog id="welcome" class="welcome" aria-labelledby="welcomeTitle">
+  <form id="profileForm" class="welcome-card">
+    <span class="tag">Bureau des enquêtes</span>
+    <h1 id="welcomeTitle">Bienvenue, détective.</h1>
+    <p>Crée ton profil et choisis ton niveau pour ouvrir ton premier dossier.</p>
+    <label for="detectiveName">Ton nom de détective</label>
+    <input id="detectiveName" name="detectiveName" maxlength="20" placeholder="Détective" autocomplete="nickname">
+    <div class="avatar-picker">
+      <span class="avatar avatar-large" id="avatarPreview"></span>
+      <div><label for="avatarStyle">Style de l’avatar</label>
+      <select id="avatarStyle"><option value="notionists">Portrait illustré</option><option value="avataaars">Personnage</option><option value="bottts">Robot</option><option value="pixel-art">Pixels</option><option value="adventurer">Aventurier</option></select>
+      <button type="button" class="btn ghost" id="shuffleAvatar">Mélanger</button></div>
+    </div>
+    <fieldset class="level-options"><legend>Ton niveau</legend>
+      <label><input type="radio" name="startLevel" value="0" checked><span><b>Débutant</b><small>SELECT, WHERE — dossiers 1 à 10.</small></span></label>
+      <label><input type="radio" name="startLevel" value="1"><span><b>Intermédiaire</b><small>Tri, regroupement, jointures — dossiers 1 à 20.</small></span></label>
+      <label><input type="radio" name="startLevel" value="2"><span><b>Avancé</b><small>Sous-requêtes, jointures multiples — les 30 dossiers.</small></span></label>
+    </fieldset>
+    <div class="actions"><button class="btn" type="submit">Ouvrir le dossier</button><button class="btn ghost" type="button" id="skipWelcome">Passer</button></div>
+  </form>
+</dialog>
+
+<dialog id="levelDialog" class="level-dialog" aria-labelledby="levelTitle">
+  <form id="levelForm">
+    <h2 id="levelTitle">Choisir ton niveau</h2>
+    <p>Ta progression est conservée. Le dossier du jour dépend du niveau choisi.</p>
+    <fieldset class="level-options"><legend>Niveau d’enquête</legend>
+      <label><input type="radio" name="level" value="0"><span><b>Débutant</b><small>SELECT, WHERE — dossiers 1 à 10.</small></span></label>
+      <label><input type="radio" name="level" value="1"><span><b>Intermédiaire</b><small>Tri, regroupement, jointures — dossiers 1 à 20.</small></span></label>
+      <label><input type="radio" name="level" value="2"><span><b>Avancé</b><small>Sous-requêtes, jointures multiples — les 30 dossiers.</small></span></label>
+    </fieldset>
+    <div class="actions"><button class="btn" type="submit">Appliquer</button><button class="btn ghost" type="button" id="cancelLevel">Annuler</button></div>
+  </form>
+</dialog>
+
+<header class="topbar">
+  <div class="identity"><div class="player"><span class="avatar" id="playerAvatar"></span><span id="playerName">Détective</span></div>
+  <a class="brand" href="index.html"><span class="mark">SQL</span><span class="brandname">Detective</span></a>
+  </div>
+  <div class="meta">
+    <button class="btn ghost level-button" id="levelBtn" aria-haspopup="dialog">Niveau : Débutant</button>
+    <div class="meta-item"><span class="lbl">Dossier</span><span class="val" id="caseNum">—</span></div>
+    <div class="meta-item"><span class="lbl">Série</span><span class="val" id="streakVal">0 j</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="case" id="caseCard">
+    <div class="stamp">Confidentiel</div>
+    <div class="case-head">
+      <span class="tag" id="caseTag">—</span>
+      <span class="case-id" id="caseId">—</span>
+    </div>
+    <h1 class="case-title" id="caseTitle">Chargement du dossier…</h1>
+    <p class="case-brief" id="caseBrief"></p>
+    <details class="evidence">
+      <summary>Pièces à conviction — schéma de la base</summary>
+      <div class="schema" id="schema"></div>
+    </details>
+  </section>
+
+  <section class="console">
+    <div class="console-bar">
+      <span class="lbl">Requête</span>
+      <span class="hint-key">Ctrl + Entrée pour exécuter</span>
+    </div>
+    <textarea id="editor" spellcheck="false" placeholder="SELECT …"></textarea>
+    <div class="actions">
+      <button class="btn" id="runBtn">Exécuter</button>
+      <button class="btn ghost" id="hintBtn">Indice</button>
+      <button class="btn ghost" id="solBtn">Solution</button>
+      <button class="btn ghost" id="resetBtn">Réinitialiser</button>
+    </div>
+    <p class="hint" id="hintBox"></p>
+    <div class="feedback" id="feedback"></div>
+    <div class="table-scroll"><table class="grid" id="grid"></table></div>
+  </section>
+
+  <section class="report" id="report">
+    <span class="lbl">Rapport d'enquête</span>
+    <pre class="report-card" id="reportCard"></pre>
+    <div class="actions">
+      <button class="btn" id="copyBtn">Copier</button>
+      <button class="btn ghost" id="nextBtn">Dossier suivant</button>
+    </div>
+  </section>
+
+  <nav class="nav">
+    <button class="btn ghost" id="prevBtn">← Dossier précédent</button>
+    <button class="btn ghost" id="archiveBtn">Tous les dossiers</button>
+  </nav>
+
+  <section class="archive" id="archive"></section>
+
+  <!-- Emplacement AdSense n°1 : sous le jeu -->
+  <div class="ad" id="adSlot1">
+    <!--
+    <ins class="adsbygoogle" style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="0000000000"
+         data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+  </div>
+
+  <section class="content">
+    <h2>Comment jouer</h2>
+    <p>Chaque jour, une nouvelle affaire. Tu disposes d'une base de données
+    (suspects, alibis, transactions, véhicules) et d'une question. Tu écris une
+    vraie requête SQL pour interroger cette base. Si ta requête renvoie
+    exactement les bonnes lignes, l'affaire est résolue.</p>
+    <p>Une partie dure moins d'une minute. Aucune inscription, aucune
+    installation, aucun cours à suivre. Tu tapes <code>Ctrl + Entrée</code>
+    pour exécuter. Le compteur de requêtes est là pour t'inciter à faire court :
+    une bonne requête SQL est une requête qui va droit au but.</p>
+
+    <h2>Qu'est-ce que SQL ?</h2>
+    <p>SQL (Structured Query Language) est le langage qui sert à interroger une
+    base de données relationnelle. C'est l'un des rares langages techniques
+    présents partout : dans la finance, la santé, le e-commerce, la logistique,
+    l'administration. Une requête SQL se lit presque comme une phrase :
+    <code>SELECT nom FROM suspects WHERE ville = 'Marseille'</code> signifie
+    « sélectionne le nom des suspects qui habitent à Marseille ».</p>
+    <p>Les cinq briques de base — <code>SELECT</code>, <code>WHERE</code>,
+    <code>ORDER BY</code>, <code>GROUP BY</code> et <code>JOIN</code> —
+    couvrent la grande majorité des questions posées en entretien technique
+    pour un poste de data analyst. Ce jeu te fait les manipuler dans l'ordre,
+    sans jamais t'expliquer la syntaxe avant de te la faire écrire.</p>
+
+    <h2>Pourquoi un jeu plutôt qu'un cours ?</h2>
+    <p>Parce qu'un cours se subit et qu'un jeu se joue. La plupart des gens
+    abandonnent SQL dans les vingt premières minutes, non pas parce que c'est
+    difficile, mais parce que c'est abstrait : on te montre une table, puis une
+    autre table, puis un résultat. Ici, chaque requête sert à quelque chose de
+    concret : identifier un suspect. Tu apprends la syntaxe comme un effet de
+    bord, pas comme un objectif.</p>
+    <p>Le format quotidien ajoute ce qui manque le plus aux cours en ligne : une
+    raison de revenir demain, et une progression visible.</p>
+
+    <h2>Questions fréquentes</h2>
+    <details><summary>Faut-il connaître SQL pour commencer ?</summary>
+    <p>Non. La première affaire ne demande qu'un <code>SELECT</code>. La
+    difficulté monte d'un cran par dossier, jusqu'aux jointures et aux
+    sous-requêtes.</p></details>
+
+    <details><summary>Combien de temps par jour ?</summary>
+    <p>Moins d'une minute. Le format est volontairement court pour tenir sur
+    une pause café.</p></details>
+
+    <details><summary>Est-ce que ça suffit pour un entretien ?</summary>
+    <p>Ça te fait pratiquer les requêtes que l'on demande réellement en
+    entretien. Ça ne remplace pas la modélisation ni l'optimisation, mais tu
+    arriveras à l'entretien sans sécher sur une jointure.</p></details>
+
+    <details><summary>Les données sont-elles réelles ?</summary>
+    <p>Non, la base est fictive et tient entièrement dans le navigateur. Aucune
+    donnée n'est envoyée sur un serveur.</p></details>
+
+    <details><summary>Puis-je rejouer les affaires passées ?</summary>
+    <p>Oui, via « Tous les dossiers ». Le niveau Débutant donne accès aux
+    dossiers 1 à 10, Intermédiaire aux dossiers 1 à 20 et Avancé aux 30 dossiers.
+    Tu peux changer de niveau dans l’en-tête à tout moment.</p></details>
+  </section>
+
+  <footer class="foot">
+    <span>SQL Detective — un dossier par jour.</span>
+    <span class="sep">·</span>
+    <a href="guide-debutant-sql.html">Guide SQL débutant</a>
+    <span class="sep">·</span>
+    <a href="comment-jouer.html">Comment jouer</a>
+    <span class="sep">·</span>
+    <a href="a-propos.html">À propos</a>
+  </footer>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js"></script>
+<script type="module">
+  import confetti from 'https://esm.sh/canvas-confetti';
+  window.confetti = confetti;
+</script>
+<script src="data.js"></script>
+<script src="puzzles.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
+

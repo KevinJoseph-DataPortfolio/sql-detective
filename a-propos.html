@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>À propos de SQL Detective — SQL Detective</title>
+<meta name="description" content="À propos de SQL Detective : comprendre et pratiquer SQL avec les enquêtes de SQL Detective.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html"><span class="mark">SQL</span><span class="brandname">Detective</span></a><a class="btn ghost" href="index.html">Jouer</a></header>
+<main class="wrap"><article class="content"><h1 class="case-title">À propos de SQL Detective</h1>
+<h2>Apprendre en cherchant</h2>
+<p>SQL Detective part d’une idée simple : une question concrète donne une bonne raison d’écrire une requête. Plutôt que de parcourir uniquement des exemples, tu explores un dossier et cherches des informations dans une base fictive. La petite histoire sert de point de départ ; la compétence travaillée reste bien réelle. Choisir des colonnes, filtrer des lignes, relier des tables et résumer des montants sont des opérations que l’on retrouve dans de nombreux usages quotidiens des données.</p>
+<h2>Un rendez-vous court</h2>
+<p>Le format quotidien invite à pratiquer souvent, par petites sessions. Une affaire vise environ soixante secondes lorsque la notion devient familière. Cette durée est un objectif de concision, pas une limite imposée : aucun chronomètre ne coupe ton travail. Tu peux lire le schéma, essayer plusieurs formulations et prendre le temps de comprendre une erreur. Les archives donnent aussi accès aux dossiers disponibles pour revoir une notion. La régularité compte davantage que la vitesse d’une première réponse.</p>
+<h2>Une progression en trente dossiers</h2>
+<p>Le parcours commence avec SELECT et WHERE, puis introduit les conditions combinées, les tris et les limites. Viennent ensuite les comptages, les moyennes et les regroupements, avant les jointures et une sous-requête. Les dernières affaires combinent plusieurs outils. Cette progression constitue une introduction pratique à SQL ; elle ne couvre pas toute la conception des bases, les performances ou les particularités des différents systèmes. Elle fournit surtout un terrain simple où écrire et observer immédiatement le résultat de ses requêtes.</p>
+<h2>Un fonctionnement dans le navigateur</h2>
+<p>Le projet repose sur trois technologies du Web : HTML pour les pages, CSS pour leur présentation et JavaScript pour les interactions. Il ne nécessite ni framework, ni compilation, ni installation de dépendances avec npm. Le moteur sql.js, en version 1.10.3, exécute SQLite dans le navigateur grâce à WebAssembly. Au chargement, le programme crée les tables et y insère les données fictives. Les requêtes du joueur sont ensuite exécutées sur cette base en mémoire, sans base de données serveur.</p>
+<h2>Des réponses vérifiées par les données</h2>
+<p>Chaque enquête possède une requête de référence. Le jeu l’exécute au démarrage pour calculer les valeurs attendues, puis compare celles-ci au résultat proposé par le joueur. Cette approche permet plusieurs écritures SQL équivalentes. Certains dossiers vérifient aussi l’ordre des lignes, lorsque le classement fait partie de la question. Les noms des personnages, leurs alibis, leurs transactions et leurs véhicules sont inventés pour cet exercice. Ils ne décrivent aucune enquête réelle et n’ont pas vocation à suggérer une culpabilité réelle.</p>
+<h2>Une progression locale</h2>
+<p>Les dossiers résolus et l’activité sont conservés dans le stockage local du navigateur. Aucun compte n’est nécessaire et aucune synchronisation entre appareils n’est prévue. Effacer les données du site supprime donc cette mémoire locale. Le chargement des bibliothèques et des polices utilise des services externes ; une connexion est nécessaire au premier démarrage. Le modèle fourni prévoit également un emplacement de mesure d’audience à configurer et une zone publicitaire commentée. Ces éléments sont distincts du moteur SQL et ne servent pas à exécuter les requêtes.</p>
+<h2>Un projet facile à reprendre</h2>
+<p>Les fichiers peuvent être servis par un simple serveur local ou publiés sur GitHub Pages. Pour ajouter une affaire, il suffit de compléter puzzles.js avec un titre, une consigne, un indice et une requête de référence cohérente avec les tables. Pour changer l’univers, les données se trouvent dans data.js. Le style commun est partagé avec ce guide et les pages d’aide. L’ambition reste modeste et concrète : rendre les premiers pas en SQL assez accessibles pour donner envie de continuer à pratiquer.</p>
+<p><a class="btn" href="index.html">Ouvrir le jeu</a></p></article>
+<footer class="foot"><a href="index.html">Le jeu</a><span class="sep">·</span><a href="guide-debutant-sql.html">Guide SQL débutant</a><span class="sep">·</span><a href="comment-jouer.html">Comment jouer</a><span class="sep">·</span><a href="a-propos.html">À propos</a></footer></main>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Comment jouer à SQL Detective — SQL Detective</title>
+<meta name="description" content="Comment jouer à SQL Detective : comprendre et pratiquer SQL avec les enquêtes de SQL Detective.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html"><span class="mark">SQL</span><span class="brandname">Detective</span></a><a class="btn ghost" href="index.html">Jouer</a></header>
+<main class="wrap"><article class="content"><h1 class="case-title">Comment jouer à SQL Detective</h1>
+<h2>Ouvrir une enquête</h2>
+<p>SQL Detective te propose une affaire quotidienne à résoudre avec une véritable requête SQL. L’écran affiche le numéro du dossier, la notion travaillée et un énoncé. Commence par lire cette consigne jusqu’au bout : elle précise les colonnes nécessaires, les conditions à respecter et parfois l’ordre des lignes. Les personnages et leurs activités sont fictifs. Ton objectif consiste à retrouver les informations attendues dans cette petite base, sans installer de logiciel et sans créer de compte.</p>
+<h2>Examiner les pièces à conviction</h2>
+<p>Déplie le schéma de la base pour connaître les tables disponibles. suspects décrit les personnes ; alibis contient leurs lieux et heures déclarés ; transactions rassemble des montants ; vehicules indique les voitures. Le champ id identifie une ligne. Un champ suspect_id permet de retrouver la personne concernée dans suspects. Ces liens deviennent utiles pour les jointures. Garde le schéma ouvert si tu hésites sur un nom : il sert de carnet de référence pendant toute l’enquête.</p>
+<h2>Écrire et exécuter</h2>
+<p>Saisis ta requête dans la zone prévue, puis clique sur Exécuter. Le raccourci Ctrl + Entrée fonctionne aussi ; sur un clavier Apple, utilise Commande + Entrée. Le tableau présente les premières lignes renvoyées et le message indique si ta réponse convient. Pour le premier dossier, SELECT nom, ville FROM suspects suffit. Pour les suivants, tu ajouteras progressivement des filtres, des classements et des regroupements. Le format vise une minute de pratique, sans compte à rebours bloquant.</p>
+<h2>Comprendre la validation</h2>
+<p>Le jeu compare les valeurs obtenues à celles de sa requête de référence. Une formulation différente peut donc réussir si elle produit le résultat attendu. Respecte les colonnes demandées et leur ordre. Lorsque l’affaire exige un classement, respecte aussi l’ordre des lignes. Pour les autres dossiers, les lignes peuvent apparaître dans un ordre différent. Une erreur SQL signale un problème de syntaxe ou de nom ; un résultat incorrect signifie que la requête fonctionne, mais répond encore imparfaitement à la question.</p>
+<h2>Utiliser les aides</h2>
+<p>Le bouton Indice révèle une piste sur la commande utile. Essaie de l’appliquer toi-même avant d’ouvrir Solution. Ce second bouton remplit l’éditeur avec la requête de référence et l’exécute. Pour apprendre, relis chaque partie puis réécris la requête sans regarder. Réinitialiser reconstruit les tables et leurs données initiales, ce qui permet de repartir après une modification accidentelle. Rien ne t’oblige à aller vite : privilégie une réponse comprise à une solution copiée machinalement.</p>
+<h2>Retrouver ses dossiers</h2>
+<p>Tous les dossiers ouvre une grille d’archives. Débutant débloque les dossiers 1 à 10, Intermédiaire les dossiers 1 à 20 et Avancé les 30 dossiers. Le niveau se change dans l’en-tête. Le bouton précédent permet de revenir sur une notion plus simple. Après une réussite, le rapport rassemble le dossier, les jours d’activité et le nombre d’affaires classées. Copier permet de récupérer ce texte. Les informations de progression sont enregistrées localement dans ce navigateur : changer d’appareil, de profil ou effacer ses données peut les faire disparaître.</p>
+<h2>Adopter les bons réflexes</h2>
+<p>Avant chaque exécution, demande-toi quelles lignes doivent rester et quelles colonnes doivent apparaître. Vérifie la différence entre supérieur et supérieur ou égal, puis entre ET et OU. Pour une jointure, écris explicitement la correspondance des identifiants. Pour une agrégation, distingue le filtre des lignes du filtre des groupes. Si tu bloques, simplifie la requête et reconstruis-la étape par étape. Revenir régulièrement sur une affaire déjà comprise aide à mémoriser la syntaxe et rend les enquêtes suivantes plus naturelles.</p>
+<p><a class="btn" href="index.html">Ouvrir le jeu</a></p></article>
+<footer class="foot"><a href="index.html">Le jeu</a><span class="sep">·</span><a href="guide-debutant-sql.html">Guide SQL débutant</a><span class="sep">·</span><a href="comment-jouer.html">Comment jouer</a><span class="sep">·</span><a href="a-propos.html">À propos</a></footer></main>
+</body>
+</html>

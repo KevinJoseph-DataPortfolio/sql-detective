@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guide SQL pour débutant — SQL Detective</title>
+<meta name="description" content="Guide SQL pour débutant : comprendre et pratiquer SQL avec les enquêtes de SQL Detective.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html"><span class="mark">SQL</span><span class="brandname">Detective</span></a><a class="btn ghost" href="index.html">Jouer</a></header>
+<main class="wrap"><article class="content"><h1 class="case-title">Guide SQL pour débutant</h1>
+<h2>Comprendre une table</h2>
+<p>Une base relationnelle rassemble des tables. Chaque table décrit un type de chose, chaque ligne représente un élément et chaque colonne contient une information. Dans SQL Detective, suspects contient notamment un identifiant, un nom et une ville. Avant de chercher une réponse, ouvre les pièces à conviction : le schéma donne les noms exacts à employer. Une faute dans un nom de colonne suffit à provoquer une erreur, même lorsque ton raisonnement est correct.</p>
+<h2>Choisir les colonnes avec SELECT</h2>
+<p>Commence par SELECT nom, ville FROM suspects. SELECT indique les colonnes à afficher ; FROM désigne la table interrogée. La virgule sépare les colonnes et leur ordre détermine celui du résultat. SELECT * affiche toutes les colonnes : pratique pour explorer, mais souvent trop large pour répondre à une enquête. Lis donc précisément les informations demandées. Le point-virgule termine traditionnellement une instruction ; pour une requête unique, SQLite accepte aussi son absence.</p>
+<h2>Filtrer avec WHERE</h2>
+<p>Pour ne conserver que Marseille, écris SELECT nom FROM suspects WHERE ville = 'Marseille'. Les textes sont entourés d’apostrophes simples ; les nombres peuvent être écrits directement. WHERE taille_cm > 180 conserve les personnes dépassant strictement cette taille. Avec >=, la limite est incluse. AND impose plusieurs conditions simultanées ; OR accepte au moins une condition. Ajoute des parenthèses lorsque tu mélanges ces opérateurs pour rendre ton intention claire et éviter une sélection inattendue.</p>
+<h2>Trier et limiter</h2>
+<p>ORDER BY age ASC classe du plus jeune au plus âgé ; DESC inverse le sens. LIMIT 3 conserve les trois premières lignes du résultat. Pour chercher les plus grands suspects, trie donc la taille en ordre décroissant avant de limiter. Lorsque plusieurs personnes partagent la même valeur, une seconde colonne de tri départage les égalités. Sans ORDER BY, ne considère jamais l’ordre observé comme une garantie. Certaines affaires vérifient explicitement le classement obtenu.</p>
+<h2>Compter et regrouper</h2>
+<p>COUNT(*) compte les lignes, SUM additionne et AVG calcule une moyenne. MIN et MAX cherchent les extrêmes. GROUP BY ville forme un groupe par ville : SELECT ville, COUNT(*) FROM suspects GROUP BY ville indique ainsi un effectif par ville. WHERE filtre les lignes avant ce regroupement ; HAVING filtre ensuite les groupes. DISTINCT supprime les doublons du résultat sélectionné. ROUND(AVG(taille_cm), 1) arrondit une moyenne à une décimale pour respecter une consigne de présentation.</p>
+<h2>Relier les indices avec JOIN</h2>
+<p>Une jointure relie deux tables à partir de colonnes correspondantes. SELECT s.nom, v.marque FROM suspects s JOIN vehicules v ON v.suspect_id = s.id associe chaque véhicule à son propriétaire. Les lettres s et v sont des alias, de simples raccourcis. JOIN conserve les correspondances ; LEFT JOIN garde aussi les suspects sans véhicule et produit alors NULL pour les informations absentes. NULL signifie une valeur manquante : teste-la avec IS NULL, plutôt qu’avec une égalité.</p>
+<h2>Une méthode pour progresser</h2>
+<p>Écris d’abord les colonnes attendues, puis la table et enfin les conditions. Exécute une petite requête, observe les lignes et modifie un seul élément à la fois. Si le résultat paraît faux, vérifie les limites numériques, les doublons et l’ordre demandé. Les erreurs font partie de l’apprentissage : leur message indique souvent le nom mal écrit ou la syntaxe à revoir. Passe ensuite au jeu pour pratiquer chaque notion dans une enquête courte, avec un indice disponible lorsque tu bloques.</p>
+<p><a class="btn" href="index.html">Ouvrir le jeu</a></p></article>
+<footer class="foot"><a href="index.html">Le jeu</a><span class="sep">·</span><a href="guide-debutant-sql.html">Guide SQL débutant</a><span class="sep">·</span><a href="comment-jouer.html">Comment jouer</a><span class="sep">·</span><a href="a-propos.html">À propos</a></footer></main>
+</body>
+</html>
